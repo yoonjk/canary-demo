@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canary-demo-v1
+  labels: 
+    app: canary-demo
+    version: stable
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: canary-demo
+      version: stable
+  template:
+    metadata:
+      labels:
+        app: canary-demo
+        version: stable
+    spec:
+      containers:
+      - name: canary-demo
+        image: nexweb1/canary-demo:v1
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
+
+            

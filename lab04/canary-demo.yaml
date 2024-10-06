@@ -1,0 +1,19 @@
+kind: VirtualService
+apiVersion: networking.istio.io/v1
+metadata:
+  name: canary-demo
+spec:
+  hosts:
+  - '*'
+  gateways:
+  - canary-demo-gateway
+  http:
+  - match:
+    - uri:
+        exact: /success
+    route:
+    - destination:
+        host: canary-demo
+        port:
+          number: 80
+

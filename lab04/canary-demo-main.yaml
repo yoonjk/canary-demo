@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canary-main
+  labels: 
+    app: canary-main
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: canary-main
+  template:
+    metadata:
+      labels:
+        app: canary-main
+        version: stable
+    spec:
+      containers:
+      - name: canary-demo
+        image: nexweb1/canary-demo:main
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        env:
+          - name: PORT
+            value: "3000"
+          - name: REVIEWS_SERVER
+            value: canary-demo-stable 
+          - name: REVIEWS_PORT
+            value: "80"
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: canary-main
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: canary-main
